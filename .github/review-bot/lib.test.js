@@ -7,7 +7,7 @@ const ok = { lint_python: 'success', lint_cpp: 'success', lint_mojo: 'success', 
 const f = (filename, a = 5, d = 1, status = 'modified') => ({ filename, additions: a, deletions: d, status });
 const EX = new Set(['challenges/easy/1_vector_add', 'challenges/medium/50_softmax']);
 const rc = (files, checks = ok) => L.ruleCheck(files, cfg, checks, EX);
-const STARTERS = ['starter.cu', 'starter.mojo', 'starter.pytorch.py', 'starter.triton.py', 'starter.jax.py', 'starter.cute.py'];
+const STARTERS = ['starter.cu', 'starter.mojo', 'starter.pytorch.py', 'starter.triton.py', 'starter.jax.py', 'starter.cute.py', 'starter.sycl.cpp'];
 const newChallenge = (dir, pyLines = 250) => [
   f(`${dir}/challenge.py`, pyLines, 0, 'added'), f(`${dir}/challenge.html`, 120, 0, 'added'),
   ...STARTERS.map(s => f(`${dir}/starter/${s}`, 60, 0, 'added'))];

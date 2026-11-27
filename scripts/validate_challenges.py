@@ -25,7 +25,7 @@ REQUIRED_METHODS = (
     "generate_functional_test",
     "generate_performance_test",
 )
-SUPPORTED_STARTERS = {
+REQUIRED_STARTERS = {
     "starter.cu",
     "starter.cute.py",
     "starter.jax.py",
@@ -33,6 +33,11 @@ SUPPORTED_STARTERS = {
     "starter.pytorch.py",
     "starter.triton.py",
 }
+# Optional frameworks are reported only when present and may be adopted per challenge.
+OPTIONAL_STARTERS = {
+    "starter.sycl.cpp",
+}
+SUPPORTED_STARTERS = REQUIRED_STARTERS | OPTIONAL_STARTERS
 CHALLENGE_ID_RE = re.compile(r"^(?P<id>\d+)_")
 CHALLENGE_DIR_RE = re.compile(r"^(?P<id>\d+)_[a-z0-9_]+$")
 
@@ -139,7 +144,7 @@ def validate_challenge_dir(challenge_dir: Path, strict_starters: bool) -> list[I
 
     starter_files = {path.name for path in starter_dir.iterdir() if path.is_file()}
     unknown_starters = sorted(starter_files - SUPPORTED_STARTERS)
-    missing_starters = sorted(SUPPORTED_STARTERS - starter_files)
+    missing_starters = sorted(REQUIRED_STARTERS - starter_files)
 
     for filename in unknown_starters:
         issues.append(Issue("ERROR", starter_dir / filename, "unsupported starter filename"))

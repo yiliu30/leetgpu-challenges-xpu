@@ -32,6 +32,7 @@ LANGUAGE_TO_EXTENSION = {
     "cute": "py",
     "triton": "py",
     "jax": "py",
+    "sycl": "cpp",
 }
 
 

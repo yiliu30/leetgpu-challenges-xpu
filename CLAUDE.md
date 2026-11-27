@@ -12,6 +12,7 @@ challenges/<difficulty>/<number>_<name>/
     ├── starter.jax.py
     ├── starter.mojo
     ├── starter.pytorch.py
+    ├── starter.sycl.cpp
     └── starter.triton.py
 ```
 
@@ -143,6 +144,7 @@ Must compile/run without errors but not solve the problem. No comments except th
 - Triton: `challenges/easy/1_vector_add/starter/starter.triton.py`
 - JAX: `challenges/easy/1_vector_add/starter/starter.jax.py`
 - CuTe: `challenges/easy/1_vector_add/starter/starter.cute.py`
+- SYCL: `challenges/easy/1_vector_add/starter/starter.sycl.cpp`
 - Mojo: `challenges/easy/1_vector_add/starter/starter.mojo`
 
 ### Parameter Description Comment
@@ -152,6 +154,7 @@ Each starter file must have exactly one comment describing the parameters, place
 | Framework | Comment template |
 |-----------|-----------------|
 | CUDA | `// <params> are device pointers` |
+| SYCL | `// <params> are device pointers` |
 | Mojo | `# <params> are device pointers` |
 | PyTorch, Triton, CuTe | `# <params> are tensors on the GPU` |
 | JAX | `# <params> are tensors on device` (+ `# return output tensor directly` inside body) |
@@ -162,12 +165,23 @@ Each starter file must have exactly one comment describing the parameters, place
 - No other comments anywhere in the starter file
 - List only input/output tensor parameter names, not size parameters
 
+## XPU / SYCL Starters
+
+`starter.sycl.cpp` is the optional Intel XPU (oneAPI DPC++) starter. Add it to a challenge when that challenge should be solvable on Intel GPUs; the scripts map it to the `sycl` language and the `starter.cpp` backend filename.
+
+SYCL-specific rules:
+
+- Keep `solve` as `extern "C"` with the same ctypes signature as the CUDA starter. The pointers are torch XPU tensors, which are USM device allocations the runner owns, so a default `sycl::queue` can read and write them directly.
+- Use an in-order queue (`sycl::queue q{sycl::property::queue::in_order()};`) whenever `solve` launches more than one kernel or reduction. The default SYCL queue is out-of-order, which silently races multi-pass kernels such as softmax.
+- Give every kernel a unique named functor (for example `struct VectorAddKernel`). Unnamed lambdas inside `solve` mangle to the same kernel name in every challenge, and loading two such modules into one process collides and segfaults.
+- `sycl::reduction` on a USM pointer uses the value already in memory as the initial value. Pass `sycl::property::reduction::initialize_to_identity()` unless the buffer is pre-initialized.
+
 ## Creation Workflow
 
 1. Create directory: `mkdir -p challenges/<difficulty>/<number>_<name>/starter`
 2. Write `challenge.py` — inherit ChallengeBase, implement all 5 methods
 3. Write `challenge.html` — all 4 sections
-4. Write starter code for all 6 frameworks
+4. Write starter code for the 6 required frameworks
 5. Lint: `pre-commit run --all-files`
 
 ## Testing with `run_challenge.py`

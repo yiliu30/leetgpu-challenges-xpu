@@ -45,6 +45,8 @@ def get_difficulty(path: Path) -> str:
 def get_language(filename: str) -> Optional[str]:
     if filename == "starter.cu":
         return "cuda"
+    if filename == "starter.sycl.cpp":
+        return "sycl"
     if filename == "starter.mojo":
         return "mojo"
     if filename.startswith("starter.") and filename.endswith(".py"):
@@ -62,6 +64,7 @@ STARTER_FILENAME_MAP = {
     "starter.triton.py": "starter.py",
     "starter.jax.py": "starter.py",
     "starter.cute.py": "starter.py",
+    "starter.sycl.cpp": "starter.cpp",
 }
 
 
