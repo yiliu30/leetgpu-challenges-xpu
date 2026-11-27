@@ -1,0 +1,5 @@
+#include <sycl/sycl.hpp>
+
+// Q, K, V, output are device pointers
+extern "C" void solve(const float* Q, const float* K, const float* V, float* output, int num_heads,
+                      int seq_len, int head_dim, int block_size, int num_selected) {}

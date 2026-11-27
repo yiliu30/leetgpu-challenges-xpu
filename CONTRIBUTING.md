@@ -27,6 +27,7 @@ challenges/<difficulty>/<number>_<name>/
     |-- starter.jax.py      # JAX
     |-- starter.mojo        # Mojo
     |-- starter.pytorch.py  # PyTorch
+    |-- starter.sycl.cpp    # SYCL (Intel XPU)
     `-- starter.triton.py   # Triton
 ```
 
